@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var myView:MyView
     lateinit var textView:TextView
     lateinit var button:Button
-    var selectedText=""
+    var selected:ToolBoxItem? = null
     val App = ChainSystem()
     var numbers = charArrayOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
      var selectedPoint = PointF()
@@ -40,19 +40,21 @@ class MainActivity : AppCompatActivity() {
                     with(myView) {
                         performClick()
                         if(event.y < 200f) {
-                            selectedText = ToolHit(event.x, event.y)
+                            selected = ToolHit(event.x, event.y)
                         }
                         else {
                             //Add(VisualNode(event.x, event.y, shape, selectedText))
-                            val selectedNode = App.Link(selectedText);
+                            val selectedNode = App.Link(selected!!.text);
+
+                            // latest node is shown with border
                             if (!selectedNode.IsFull()) {
-                                //TODO: wide stroke
-                                Add(VisualNode(event.x, event.y, shape, selectedText, true))
+                                ResetStrokes()
+                                Add(VisualNode(event.x, event.y, shape, selected!!, true))
                             }
                             else {
-                                Add(VisualNode(event.x, event.y, shape, selectedText))
+                                Add(VisualNode(event.x, event.y, shape, selected!!))
                             }
-                            if(selectedText == "OH") {
+                            if(selected!!.text == "OH") {
                                 //TODO: show as 2 ellipses
                             }
 
@@ -68,13 +70,10 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                     }
-
                 }
-
             }
 
             v?.onTouchEvent(event) ?: true
         }
-
     }
 }

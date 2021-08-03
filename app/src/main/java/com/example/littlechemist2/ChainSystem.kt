@@ -145,7 +145,7 @@ class ChainSystem {
                 s += if (item.value > 1) {
                     "${item.key}${item.value}";
                 } else {
-                    "${item.key}";
+                    item.key;
                 }
             }
             s = MatchKnown(s, counts);
@@ -157,10 +157,10 @@ class ChainSystem {
         }
     }
 
-    /// <summary>
-    /// Is every possible bond used
-    /// </summary>
-    /// <returns>true / false</returns>
+    /**
+    * Is every possible bond used
+    * @returns true / false
+    */
     fun IsComplete(): Boolean {
         var retval = true;
         Chain.forEach { retval = (retval and it.IsFull()) };
@@ -178,6 +178,7 @@ class ChainSystem {
 
         val ss = ParseNodeText(s);
         //TODO: C2H5OH vs C2H6O
+        //TODO: get from net
         val v: String = when (ss) {
             "H2O" -> " (Vesi)"
             "OH2" -> "H2O (Vesi)"
@@ -189,7 +190,7 @@ class ChainSystem {
             "CH4" -> "Metaani"
             "C3H8" -> "Propaani"  // lines from 2nd C->H mismatch
             //"CH3CH2CH3" => "Propaani",
-            "C3OH" -> "Metanoli"
+            "CH3OH" -> "Metanoli"
             "NH3" -> "Ammoniakki"
             "NH2OH" -> "Hydroksyyliamiini"
             "CHN" -> "Syaanivety/ Sinihappo"
@@ -204,11 +205,10 @@ class ChainSystem {
     companion object {
         private lateinit var previous: Node; // TODO: bad
 
-        /// <summary>
-        /// TODO: sort node text for simpler matching
-        /// </summary>
-        /// <param name="s"></param>
-        /// <returns></returns>
+        /**
+        * TODO: sort node text for simpler matching
+        * @param s
+        */
         private fun ParseNodeText(s: String): String {
             //TODO: parsenodetext
             return s;
