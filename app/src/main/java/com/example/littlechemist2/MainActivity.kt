@@ -9,13 +9,28 @@ import android.view.MotionEvent
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import okhttp3.ResponseBody
+
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.scalars.ScalarsConverterFactory
+import retrofit2.http.GET
+import retrofit2.http.Path
+
+
+interface GitHubService {
+    @GET("moleculelist.csv")    //"users/{user}/repos")
+    fun listRepos(/*@Path("user") user: String? */): Call<String?>?
+}
 
 class MainActivity : AppCompatActivity() {
     lateinit var myView:MyView
     lateinit var textView:TextView
     lateinit var button:Button
     var selected:ToolBoxItem? = null
-    val App = ChainSystem()
+    lateinit var App : ChainSystem
     var numbers = charArrayOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
      var selectedPoint = PointF()
 
@@ -75,5 +90,28 @@ class MainActivity : AppCompatActivity() {
 
             v?.onTouchEvent(event) ?: true
         }
+
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl("https://laitinent.github.io/") //https://laitinent.github.io/moleculelist.csv
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .build()
+
+        val service: GitHubService = retrofit.create(GitHubService::class.java)
+        val repos: Call<String?>?  = service.listRepos()//"octocat")
+
+        repos?.enqueue(object : Callback<String?> {
+            override fun onResponse(call: Call<String?>?, response: Response<String?>) {
+                if (response.isSuccessful) {
+                    val responseString: String? = response.body()
+                    // todo: do something with the response string
+                    App = ChainSystem(responseString!!)
+                    Log.d("REPOS", responseString!!)
+                }
+            }
+
+            override fun onFailure(call: Call<String?>?, t: Throwable?) {}
+        })
+        //val repos: String = service.listRepos()!!.execute().body()!!.string();
+
     }
 }

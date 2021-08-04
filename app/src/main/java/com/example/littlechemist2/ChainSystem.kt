@@ -2,10 +2,28 @@ package com.example.littlechemist2
 
 import java.util.*
 
-
-class ChainSystem {
+/**
+ * @param knownData - csv file contents of known molecule descriptions
+ */
+class ChainSystem(knownData:String) {
     val Chain = mutableListOf<Node>();
+    lateinit var Known : MutableMap<String,String>
 
+    init {
+        Known = parseKnown(knownData)
+    }
+
+    private fun parseKnown(knownData: String): MutableMap<String, String> {
+        var retMap = mutableMapOf<String,String>()
+        val lines =knownData.split("\n")
+        lines.forEach {
+            val fields = it.split(";")
+            if(fields.size>1) {
+                retMap.put(fields[0], fields[1])
+            }
+        }
+        return retMap
+    }
 
     fun Clear() {
         Chain.clear();
@@ -177,8 +195,8 @@ class ChainSystem {
         val list2 = list.sortedWith(compareBy { it.Code }) // not used?
 
         val ss = ParseNodeText(s);
-        //TODO: C2H5OH vs C2H6O
-        //TODO: get from net
+        /*TODO: C2H5OH vs C2H6O
+        //TODO: get from net https://laitinent.gitihub.io/moleculelist.csv
         val v: String = when (ss) {
             "H2O" -> " (Vesi)"
             "OH2" -> "H2O (Vesi)"
@@ -198,7 +216,8 @@ class ChainSystem {
             "CH3CN" -> "Asetonitriili"
             else -> s
         };
-        return v;
+        return v;*/
+        return Known[ss]!!
     }
 
 
