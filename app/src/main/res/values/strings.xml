@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">LittleChemist2</string>
+    <string name="txtClear">Clear</string>
 </resources>

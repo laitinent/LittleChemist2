@@ -2,7 +2,7 @@ package com.example.littlechemist2
 
 import android.content.Context
 import android.graphics.*
-import android.graphics.drawable.shapes.Shape
+
 import android.util.AttributeSet
 import android.util.Log
 import android.view.View
@@ -10,7 +10,8 @@ import android.view.View
 class MyView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
 
     private val textpaint = Paint()
-    val paint=Paint()
+    private val paint=Paint()
+    private val linePaint = Paint()
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
@@ -19,25 +20,23 @@ class MyView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
         paint.color=Color.RED
         paint.strokeWidth = 5f
 
-
         InitToolbox(canvas!!)
-
 
         for(s in lista) {
             // show active node with border(=stroke)
             paint.color = s.tb.color
             paint.style = Paint.Style.FILL
-            canvas?.drawOval(s.x-25, s.y-25,s.x+s.s.width/2, s.y+s.s.height/2, paint )
-            if(s.Current == true){
+            canvas.drawOval(s.x-25, s.y-25,s.x+s.s.width/2, s.y+s.s.height/2, paint )
+            if(s.Current){
                 paint.style = Paint.Style.STROKE
                 paint.color = Color.BLACK
-                canvas?.drawOval(s.x-25, s.y-25,s.x+s.s.width/2, s.y+s.s.height/2, paint )
+                canvas.drawOval(s.x-25, s.y-25,s.x+s.s.width/2, s.y+s.s.height/2, paint )
             }
 
             canvas.drawText(s.tb.text, s.x, s.y+50f, textpaint)
         }
         lines.forEach { l ->
-            canvas.drawLine(l.left, l.top, l.right, l.bottom, Paint())
+            canvas.drawLine(l.left, l.top, l.right, l.bottom, linePaint)
         }
     }
 
@@ -50,8 +49,8 @@ class MyView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
         }
     }
 
-    private val lista = mutableListOf<VisualNode>();
-    private val lines = mutableListOf<RectF>(); // using rectf to store 2 points
+    private val lista = mutableListOf<VisualNode>()
+    private val lines = mutableListOf<RectF>() // using rectf to store 2 points
 
     /** Add item to list of drawables
      * @param shape VisualNode to add
@@ -82,29 +81,34 @@ class MyView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
         ToolBoxItem("OH", Color.parseColor("maroon")), //https://developer.android.com/reference/android/graphics/Color.html#parseColor(java.lang.String)
         ToolBoxItem("N", Color.BLUE),
     )
+
+    private val radius2 = 100f  // 50f
+    private val x1 = 2f*radius2
+    private val y1 = 100f
+
     private fun InitToolbox(canvas:Canvas)  {
 
         val paint = Paint()
         //paint.color = Color.YELLOW
 
-
-        (0 until items.size).forEach { i ->
+        (items.indices).forEach { i ->
             paint.color = items[i].color
-            canvas.drawOval(i*100f, 100f,i*100f+50f, 100f+50f, paint )
-            canvas.drawText(items[i].text,i*100f, 100f+50f, textpaint)
+            canvas.drawOval(i*x1, y1,i*x1+radius2, y1+radius2, paint )
+            Log.d("OVAL", "${i*x1} -> ${i*x1+radius2}")
+            canvas.drawText(items[i].text,i*x1+radius2/2, y1+radius2/2, textpaint)
         }
     }
 
     /**
      * View top contains toolbar
-     * TODO: Use recyclerView?
+     * TODO: Use recyclerView? "H" not first?
      * @param x X coord of touch
      * @param y Y coord of touch
      */
     fun ToolHit(x:Float, y:Float): ToolBoxItem? {
         Log.d("TOOL_HIT", "y = $y")
-        if(y<200f) {
-            val index = (x/100f).toInt()
+        if(y< y1+ 2*radius2) {
+            val index = (x/x1).toInt()
             Log.d("TOOL_HIT", "index = $index")
             return if(index<items.size) items[index] else null
         }

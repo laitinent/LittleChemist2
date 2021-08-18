@@ -1,32 +1,34 @@
 package com.example.littlechemist2
 
-import java.util.*
-
 /**
  * @param knownData - csv file contents of known molecule descriptions
  */
 class ChainSystem(knownData:String) {
-    val Chain = mutableListOf<Node>();
-    lateinit var Known : MutableMap<String,String>
+    private val Chain = mutableListOf<Node>()
+    private var Known : MutableMap<String,String>
 
     init {
         Known = parseKnown(knownData)
     }
 
+    fun isEmpty(): Boolean {
+        return Chain.isEmpty()
+    }
+
     private fun parseKnown(knownData: String): MutableMap<String, String> {
-        var retMap = mutableMapOf<String,String>()
+        val retMap = mutableMapOf<String,String>()
         val lines =knownData.split("\n")
         lines.forEach {
             val fields = it.split(";")
             if(fields.size>1) {
-                retMap.put(fields[0], fields[1])
+                retMap[fields[0]] = fields[1]
             }
         }
         return retMap
     }
 
     fun Clear() {
-        Chain.clear();
+        Chain.clear()
     }
     /*
     public void Add(string s)
@@ -40,18 +42,19 @@ class ChainSystem(knownData:String) {
     /** Link and add
      ** @param s - new node text **/
     fun Link(s: String): Node {
-        val n = Node(s);
-        var free: Int = -1; // 0 means no mode left, -1 = first in chain
+        val n = Node(s)
+        var free: Double = -1.0 // 0 means no mode left, -1 = first in chain
 
         if (Chain.count() > 0) {
-            free = previous.AddLink(n);
+            free = previous.AddLink(n)
         } else {
-            previous = n;
+            previous = n
         }
 
         // TODO: find way to get this correct every time, maybe one with biggest maxnodes?
-        if (n.MaxNodes > 1 && free == 0) {
-            previous = n; }
+        if (n.MaxNodes > 1 && free == 0.0) {
+            previous = n
+        }
 
         /* not used, using OH  type instead
         // O+H -> OH when last
@@ -84,45 +87,44 @@ class ChainSystem(knownData:String) {
         else
         {
         */
-        Chain.add(n);
+        Chain.add(n)
         //}
-        return n;
+        return n
     }
 
     /** Check, which node has link to specified id
      * @param id Id to search in nodes links
      * @returns Node, null otherwise **/
     private fun FindNode(id: Int): Node? {
-        var retval: Node?;
+        var retval: Node?
+
         for (item in Chain) {
-            retval = item.Nodes.find { it.Id == id };
-            if (retval != null) {
-                return item;
-            }
+            retval = item.Nodes.find { it.Id == id }
+            if (retval != null) return item
         }
 
-        return null;
+        return null
     }
 
     /** toString
      *
      **/
     override fun toString(): String {
-        var s = "";
+        var s = ""
 
         //foreach (var n in Chain)
         for (i in Chain.indices)
         //for (var i = 0; i < Chain.Count; i++)
         {
-            val n: Node = Chain[i];
-            s += "$i. $n.Text (";
+            val n: Node = Chain[i]
+            s += "$i. $n.Text ("
             for (l in n.Nodes) {
-                s += "$l.Text ";
+                s += "$l.Text "
             }
-            s += ") ";
+            s += ") "
         }
 
-        return s;
+        return s
     }
 
     // how to print via links
@@ -132,8 +134,8 @@ class ChainSystem(knownData:String) {
      * @param v New linked item text**/
     fun Link(sel: Int, v: String) {
         if (sel < Chain.count()) {
-            previous = Chain[sel];
-            Link(v);
+            previous = Chain[sel]
+            Link(v)
         }
     }
 
@@ -142,12 +144,12 @@ class ChainSystem(knownData:String) {
      * @returns formatted string **/
     fun toString(formatted: Boolean): String// = false)
     {
-        var s = "";
+        //var s = "";
         if (formatted) {
+            /*
             val counts = mutableMapOf<String, Int>()
             //numbersMap.put("three", 3)
             //numbersMap["one"] = 11
-
             //val counts = dictionaryOf<string, int>();
 
             // count
@@ -165,14 +167,47 @@ class ChainSystem(knownData:String) {
                 } else {
                     item.key;
                 }
-            }
-            s = MatchKnown(s, counts);
+            }*/
+
+            var s = countElements()
+            s = MatchKnown(s)//, counts);
             if (IsComplete()) {
-                s += " READY "; }
-            return s;
+                s += " READY "
+            }
+            return s
         } else {
-            return toString();
+            return toString()
         }
+    }
+
+    private fun countElements(): String {
+        val counts = mutableMapOf<String, Int>()
+        //numbersMap.put("three", 3)
+        //numbersMap["one"] = 11
+
+        //val counts = dictionaryOf<string, int>();
+
+        // count
+        for (n in Chain) {
+            if (!counts.containsKey(n.Text)) {
+                counts[n.Text] = 1
+            } else {
+                counts[n.Text] = counts[n.Text]!!.plus(1)
+            }
+        }
+
+        //TODO:
+        val map = counts.toSortedMap()
+
+        var s=""
+        for (item in counts) {
+            s += if (item.value > 1) {
+                "${item.key}${item.value}"
+            } else {
+                item.key
+            }
+        }
+        return s
     }
 
     /**
@@ -180,21 +215,21 @@ class ChainSystem(knownData:String) {
     * @returns true / false
     */
     fun IsComplete(): Boolean {
-        var retval = true;
-        Chain.forEach { retval = (retval and it.IsFull()) };
-        return retval;
+        var retval = true
+        Chain.forEach { retval = (retval and it.IsFull()) }
+        return retval
     }
 
 
-    val list = mutableListOf<FormulaItem>();
+    private val list = mutableListOf<FormulaItem>()
 
     private fun MatchKnown(s: String, counts: MutableMap<String, Int>): String {
         for (item in counts) {
-            list.add(FormulaItem(item.key, item.value));
+            list.add(FormulaItem(item.key, item.value))
         }
         val list2 = list.sortedWith(compareBy { it.Code }) // not used?
 
-        val ss = ParseNodeText(s);
+        val ss = ParseNodeText(s)
         /*TODO: C2H5OH vs C2H6O
         //TODO: get from net https://laitinent.gitihub.io/moleculelist.csv
         val v: String = when (ss) {
@@ -217,12 +252,30 @@ class ChainSystem(knownData:String) {
             else -> s
         };
         return v;*/
-        return Known[ss]!!
+        return if(Known.containsKey(ss)) {
+            Known[ss]!!
+        } else ""
     }
 
+    /**
+     * Does molecule string have a descriptive name
+     * @return name if found, empty string otherwise
+     */
+    private fun MatchKnown(s: String):String
+    {
+        return if(Known.containsKey(s)) {
+            Known[s]!!
+        } else ""
+    }
+
+    fun CountAndMatchKnown():String
+    {
+        val s = countElements()
+        return MatchKnown(s)
+    }
 
     companion object {
-        private lateinit var previous: Node; // TODO: bad
+        private lateinit var previous: Node // TODO: bad
 
         /**
         * TODO: sort node text for simpler matching
@@ -230,7 +283,7 @@ class ChainSystem(knownData:String) {
         */
         private fun ParseNodeText(s: String): String {
             //TODO: parsenodetext
-            return s;
+            return s
         }
     }
 

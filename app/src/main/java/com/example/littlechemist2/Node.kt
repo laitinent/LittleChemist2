@@ -2,22 +2,19 @@ package com.example.littlechemist2
 
 
 import java.util.*
+import kotlin.math.abs
 
-class Node(  text:String)
+class Node(text:String)
 {
     var Text = text.uppercase(Locale.getDefault())
-        get() = field
     var Id:Int = 0
         get() {
             TODO()
         }
 
     var MaxNodes:Int  = 1
-        get() = field
-    val  Nodes =  mutableListOf<Node>()
-        get() = field
-    var BondCount:Int = 0;
-
+    val Nodes =  mutableListOf<Node>()
+    private var BondCount:Double = 0.0  // double for special cases, like NO2
 
     init
     {
@@ -26,10 +23,12 @@ class Node(  text:String)
         currentId++
     }
 
-
-
-    fun  SetMaxNodes( text:String)
+    /**
+     * How many connections are possible.
+     */
+    private fun SetMaxNodes( text:String)
     {
+        //TODO: use negative values too, as in chemistry, e.g. "O" = -2. Abs value already used in math below
         MaxNodes = when(text)     //        switch (text)
         {
             "H" -> 1// break;
@@ -39,7 +38,7 @@ class Node(  text:String)
             "O" -> 2
             "N" -> 3
             else -> 0
-        };
+        }
     }
 
     /// <summary>
@@ -47,88 +46,98 @@ class Node(  text:String)
     /// </summary>
     /// <param name="n">Node to link</param>
     /// <returns>Number of free node slots left</returns>
-    fun   AddLink( n:Node):Int
+    fun AddLink( n:Node):Double
     {
-        val bondsPlus = CheckSpecialBond(Text, n.Text);  // e.g. C-O uses 2x bonds
+        val bondsPlus = CheckSpecialBond(Text, n.Text)  // e.g. C-O uses 2x bonds
         //if (Nodes.Count < MaxNodes)
-        if ((bondsPlus + BondCount) <= MaxNodes) // was Nodes.Count
+        if ((bondsPlus + BondCount) <= abs(MaxNodes)) // was Nodes.Count
         {
-            if (!n.Nodes.contains(this))
-            {
-                n.Nodes.add(this);
-                n.AddBonds(bondsPlus);
+            if (!n.Nodes.contains(this)) {
+                n.Nodes.add(this)
+                n.AddBonds(bondsPlus)
             }
 
-            Nodes.add(n);
-            BondCount += bondsPlus;
+            Nodes.add(n)
+            BondCount += bondsPlus
         }
-        else
-        {
-            println("No more items can be added to $Text (max. $MaxNodes)");
+        else {
+            println("No more items can be added to $Text (max. ${abs(MaxNodes)}")
         }
+
+        //TODO: maybe same
         return if (IsFull()) // was n.IsFull
         {
-            0;
+            FreeBonds()
         } else {
-            MaxNodes - BondCount;// Nodes.Count;
+            abs(MaxNodes.toDouble()) - BondCount // Nodes.Count;
         }
     }
 
-    fun  AddBonds( n:Int)
+    private fun  AddBonds(n:Double)
     {
-        if (n in 1..4) // so far 4+ bonds not supported
+        if (n.toInt() in 1..4) // so far 4+ bonds not supported
         {
-            BondCount += n;
+            BondCount += n
         }
     }
 
-    fun   IsFull():Boolean
+    fun IsFull(text:String?=null):Boolean
     {
         //checks also nodes with 2+ bonds
-        var cnt = 0;
-        for ( n in Nodes)
-        {
-            cnt += CheckSpecialBond(Text, n.Text);
+        var cnt = 0.0
+        for ( n in Nodes) {
+            cnt += CheckSpecialBond(Text, n.Text)
         }
-        return cnt == MaxNodes;
+        return abs(MaxNodes.toDouble()) - cnt < 1.0  //cnt == MaxNodes.toDouble();
+    }
+
+    private fun FreeBonds():Double
+    {
+        //checks also nodes with 2+ bonds
+        var cnt = 0.0
+        for ( n in Nodes) {
+            cnt += CheckSpecialBond(Text, n.Text)
+        }
+        return abs(MaxNodes.toDouble()) - cnt  //cnt == MaxNodes.toDouble();
     }
 
 
-
-
-    override fun  toString():String
+    override fun toString():String
     {
-        return "$Id: $Text ($Nodes.Count) ";
+        return "$Id: $Text ($Nodes.Count) "
     }
 
     companion object {
-        private var  currentId:Int = 1;
+        private var  currentId:Int = 1
         fun Reset() {
-            currentId = 1;
+            currentId = 1
         }
 
         /// <summary>
-        /// Double etc bonding. Param order doesn't matter.
+        /// Double etc bonding. Param order doesn't matter. Note: not same as max nodes
         /// </summary>
         /// <param name="from">First node text</param>
         /// <param name="to">Second node text</param>
         /// <returns>Bond count, default 1</returns>
-        fun  CheckSpecialBond(  from:String,  to:String):Int
+        fun CheckSpecialBond(from:String, to:String):Double
         {
-            if ((from == "C" || to == "C") && from != to)
-            {
+            if ((from == "C" || to == "C") && from != to) {
                 //if ((from == "C" && to == "O") || (from == "O" && to == "C"))
-                if (to == "O" || from == "O")
-                {
-                    return 2;
+                if (to == "O" || from == "O") {
+                    return 2.0
                 }
-                if (to == "N" || from == "N")
-                {
-                    return 3;
+                if (to == "N" || from == "N") {
+                    return 3.0
                 }
             }
 
-            return 1;
+            //TODO: how about others than HNO3
+            if ((from == "N" || to == "N") && from != to) {
+                if (to == "O" || from == "O") {
+                    return 1.5
+                }
+            }
+            return 1.0
         }
     }
 }
