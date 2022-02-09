@@ -1,5 +1,6 @@
 package com.example.littlechemist2
 
+import android.R.attr
 import android.content.Context
 import android.graphics.*
 
@@ -7,7 +8,39 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 
+
+
 class MyView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
+
+    companion object {
+        fun getDrawableFromColor(color:Int):Int
+        {
+            return when(color)
+            {
+                Color.BLACK -> R.drawable.gray
+                Color.BLUE -> R.drawable.blueball
+                Color.RED -> R.drawable.redball
+
+                else -> R.drawable.lightgray
+            }
+        }
+
+        /**
+         * @param Resource drawable
+         * @return Color
+         */
+        fun getColorFromDrawable(drawable:Int):Int
+        {
+            return when(drawable)
+            {
+                 R.drawable.gray->Color.BLACK
+                 R.drawable.blueball->Color.BLUE
+                 R.drawable.redball->Color.RED
+
+                else -> Color.GRAY
+            }
+        }
+    }
 
     private val textpaint = Paint()
     private val paint=Paint()
@@ -17,16 +50,20 @@ class MyView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
         super.onDraw(canvas)
         textpaint.textSize = 48f
 
-        paint.color=Color.RED
+        paint.color= Color.RED
         paint.strokeWidth = 5f
 
-        InitToolbox(canvas!!)
+        //InitToolbox(canvas!!)
 
         for(s in lista) {
             // show active node with border(=stroke)
-            paint.color = s.tb.color
-            paint.style = Paint.Style.FILL
-            canvas.drawOval(s.x-25, s.y-25,s.x+s.s.width/2, s.y+s.s.height/2, paint )
+            //paint.color = s.tb.color
+            //paint.style = Paint.Style.FILL
+            //canvas.drawOval(s.x-25, s.y-25,s.x+s.s.width/2, s.y+s.s.height/2, paint )
+            //val d = resources.getDrawable(R.drawable.redball, null)
+            val d = resources.getDrawable(getDrawableFromColor(s.tb.color), null)
+            d.setBounds((s.x-25).toInt(), (s.y-25).toInt(), (s.x+s.s.width/2).toInt(), (s.y+s.s.height/2).toInt())
+            d.draw(canvas!!)
             if(s.Current){
                 paint.style = Paint.Style.STROKE
                 paint.color = Color.BLACK
@@ -36,7 +73,7 @@ class MyView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
             canvas.drawText(s.tb.text, s.x, s.y+50f, textpaint)
         }
         lines.forEach { l ->
-            canvas.drawLine(l.left, l.top, l.right, l.bottom, linePaint)
+            canvas?.drawLine(l.left, l.top, l.right, l.bottom, linePaint)
         }
     }
 
@@ -94,6 +131,7 @@ class MyView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
         (items.indices).forEach { i ->
             paint.color = items[i].color
             canvas.drawOval(i*x1, y1,i*x1+radius2, y1+radius2, paint )
+
             Log.d("OVAL", "${i*x1} -> ${i*x1+radius2}")
             canvas.drawText(items[i].text,i*x1+radius2/2, y1+radius2/2, textpaint)
         }

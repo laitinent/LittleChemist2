@@ -1,5 +1,7 @@
 package com.example.littlechemist2
 
+//TODO: Hydrogen autofill when new >1 link node is selected
+
 /**
  * @param knownData - csv file contents of known molecule descriptions
  */
@@ -20,9 +22,7 @@ class ChainSystem(knownData:String) {
         val lines =knownData.split("\n")
         lines.forEach {
             val fields = it.split(";")
-            if(fields.size>1) {
-                retMap[fields[0]] = fields[1]
-            }
+            if(fields.size>1) {  retMap[fields[0]] = fields[1]  }
         }
         return retMap
     }
@@ -31,10 +31,8 @@ class ChainSystem(knownData:String) {
         Chain.clear()
     }
     /*
-    public void Add(string s)
-    {
+    public void Add(string s)  {
         var n = new Node(s);
-
         Chain.Add(n);
         previous = n;
     }*/
@@ -45,11 +43,8 @@ class ChainSystem(knownData:String) {
         val n = Node(s)
         var free: Double = -1.0 // 0 means no mode left, -1 = first in chain
 
-        if (Chain.count() > 0) {
-            free = previous.AddLink(n)
-        } else {
-            previous = n
-        }
+        if (Chain.count() > 0) {  free = previous.AddLink(n)
+        } else { previous = n  }
 
         // TODO: find way to get this correct every time, maybe one with biggest maxnodes?
         if (n.MaxNodes > 1 && free == 0.0) {
@@ -58,8 +53,7 @@ class ChainSystem(knownData:String) {
 
         /* not used, using OH  type instead
         // O+H -> OH when last
-        if(false)//Chain.Count > 2 && IsComplete() && previous.Text == "O" && n.Text == "H")
-        {
+        if(false)//Chain.Count > 2 && IsComplete() && previous.Text == "O" && n.Text == "H") {
             // TODO: CH3OH -> C still has extra O (changes to extra OH)
             // Replace O with OH, don't add H
             Node ohnode = new("OH");
@@ -68,10 +62,7 @@ class ChainSystem(knownData:String) {
                 ohnode.AddLink(previous?.Nodes[0]); // Nodes[0] links back
                 //TODO: fix
                 var index = previous.Nodes[0].Nodes.FindIndex(n => n.Id == ohnode.Id);
-                if(index >= 0)
-                {
-                    previous.Nodes[0].Nodes[index] = ohnode;
-                }
+                if(index >= 0) { previous.Nodes[0].Nodes[index] = ohnode; }
                 //if (!previous?.Nodes[0].Nodes.Contains(ohnode))
                 //{
                 //previous?.Nodes[0].Nodes.Add(ohnode);
@@ -102,7 +93,6 @@ class ChainSystem(knownData:String) {
             retval = item.Nodes.find { it.Id == id }
             if (retval != null) return item
         }
-
         return null
     }
 
@@ -118,12 +108,9 @@ class ChainSystem(knownData:String) {
         {
             val n: Node = Chain[i]
             s += "$i. $n.Text ("
-            for (l in n.Nodes) {
-                s += "$l.Text "
-            }
+            for (l in n.Nodes) { s += "$l.Text "  }
             s += ") "
         }
-
         return s
     }
 
@@ -154,19 +141,13 @@ class ChainSystem(knownData:String) {
 
             // count
             for (n in Chain) {
-                if (!counts.containsKey(n.Text)) {
-                    counts[n.Text] = 1;
-                } else {
-                    counts[n.Text] = counts[n.Text]!!.plus(1);
-                }
+                if (!counts.containsKey(n.Text)) { counts[n.Text] = 1;
+                } else {  counts[n.Text] = counts[n.Text]!!.plus(1);   }
             }
 
             for (item in counts) {
-                s += if (item.value > 1) {
-                    "${item.key}${item.value}";
-                } else {
-                    item.key;
-                }
+                s += if (item.value > 1) { "${item.key}${item.value}";
+                } else { item.key; }
             }*/
 
             var s = countElements()
@@ -189,10 +170,11 @@ class ChainSystem(knownData:String) {
 
         // count
         for (n in Chain) {
-            if (!counts.containsKey(n.Text)) {
-                counts[n.Text] = 1
+            counts[n.Text] =
+            if (!counts.containsKey(n.Text)) {  1 //counts[n.Text] = 1
             } else {
-                counts[n.Text] = counts[n.Text]!!.plus(1)
+                //counts[n.Text] =
+                counts[n.Text]!!.plus(1)
             }
         }
 
