@@ -17,11 +17,13 @@
 
     <com.example.littlechemist2.MyView
         android:id="@+id/myView"
-        android:layout_width="710dp"
-        android:layout_height="1144dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="921dp"
+        android:layout_height="1183dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="56dp"
+        android:background="#F6F4F4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/recyclerToolView" />
 
     <Button
         android:id="@+id/button"
@@ -47,5 +49,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/button" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerToolView"
+        android:layout_width="932dp"
+        android:layout_height="228dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="1dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

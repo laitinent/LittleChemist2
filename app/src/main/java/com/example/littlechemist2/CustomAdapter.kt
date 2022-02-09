@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class CustomAdapter(private val dataSet: Array<Int>,val clickListener: (Int) -> Unit) :   // was <String>
+class CustomAdapter(private val dataSet: Array<ToolBoxItem2>,val clickListener: (ToolBoxItem2) -> Unit) :   // was Int //was <String>
     RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
 
     /**
@@ -16,11 +16,12 @@ class CustomAdapter(private val dataSet: Array<Int>,val clickListener: (Int) -> 
      * (custom ViewHolder).
      */
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        //val textView: TextView
+        val textView: TextView
         var imageView: ImageView
         init {
             // Define click listener for the ViewHolder's View.
             imageView = view.findViewById(R.id.imageView)
+            textView = view.findViewById(R.id.textView)
         }
     }
 
@@ -40,8 +41,10 @@ class CustomAdapter(private val dataSet: Array<Int>,val clickListener: (Int) -> 
         viewHolder.imageView.setOnClickListener { clickListener(item) }
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        //viewHolder.textView.text = dataSet[position]
-        viewHolder.imageView.setImageResource(dataSet[position])
+        // text found from color of drawable
+        //TODO: may be simplified
+        viewHolder.textView.text = item.text//VisualNode.textFromColor(MyView.getColorFromDrawable(dataSet[position]))//dataSet[position]
+        viewHolder.imageView.setImageResource(item.drawableResId)//dataSet[position])
     }
 
     // Return the size of your dataset (invoked by the layout manager)

@@ -12,35 +12,8 @@ import android.view.View
 
 class MyView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
 
-    companion object {
-        fun getDrawableFromColor(color:Int):Int
-        {
-            return when(color)
-            {
-                Color.BLACK -> R.drawable.gray
-                Color.BLUE -> R.drawable.blueball
-                Color.RED -> R.drawable.redball
+    // static funcs for drawables
 
-                else -> R.drawable.lightgray
-            }
-        }
-
-        /**
-         * @param Resource drawable
-         * @return Color
-         */
-        fun getColorFromDrawable(drawable:Int):Int
-        {
-            return when(drawable)
-            {
-                 R.drawable.gray->Color.BLACK
-                 R.drawable.blueball->Color.BLUE
-                 R.drawable.redball->Color.RED
-
-                else -> Color.GRAY
-            }
-        }
-    }
 
     private val textpaint = Paint()
     private val paint=Paint()
@@ -61,7 +34,8 @@ class MyView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
             //paint.style = Paint.Style.FILL
             //canvas.drawOval(s.x-25, s.y-25,s.x+s.s.width/2, s.y+s.s.height/2, paint )
             //val d = resources.getDrawable(R.drawable.redball, null)
-            val d = resources.getDrawable(getDrawableFromColor(s.tb.color), null)
+            //val d = resources.getDrawable(getDrawableFromColor(s.tb.color), null)
+            val d = resources.getDrawable(s.tb.drawableResId, null)
             d.setBounds((s.x-25).toInt(), (s.y-25).toInt(), (s.x+s.s.width/2).toInt(), (s.y+s.s.height/2).toInt())
             d.draw(canvas!!)
             if(s.Current){
@@ -110,6 +84,7 @@ class MyView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
         lines.add(RectF(start.x, start.y, end.x, end.y))
     }
 
+    // items now obsolete (recyclerview with drawables used)
     //private val texts = listOf("H","O","C","OH","N")
     private val items = listOf(
         ToolBoxItem("H", Color.YELLOW),
@@ -164,3 +139,4 @@ class MyView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
 }
 
 data class ToolBoxItem(val text:String, val color:Int)
+data class ToolBoxItem2(val text:String, val color:Int, val drawableResId: Int)
