@@ -38,7 +38,7 @@ class CustomAdapter(private val dataSet: Array<ToolBoxItem2>,val clickListener: 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         // https://stackoverflow.com/questions/29424944/recyclerview-itemclicklistener-in-kotlin
         var item = dataSet[position]
-        viewHolder.imageView.setOnClickListener { clickListener(item) }
+        viewHolder.imageView.setOnClickListener { clickListener(item) }  // redirect listener received as parameter to clicklistener of each image in array
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
         // text found from color of drawable

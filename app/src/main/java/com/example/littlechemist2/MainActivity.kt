@@ -83,8 +83,9 @@ class MainActivity : AppCompatActivity() {
             textView.text = ""
         }
 
+        // draw size
         val shape = OvalShape()
-        shape.resize(50f, 50f)
+        shape.resize(90f, 90f)
 
         myView.setOnTouchListener { v, event ->
             when (event?.action) {
