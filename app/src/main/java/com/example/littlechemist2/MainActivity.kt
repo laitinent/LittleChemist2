@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var toolBox2: RecyclerView
     private var mAdapter: CustomAdapter? = null
     private var selected: ToolBoxItem2? = null//ToolBoxItem? = null
-    private var App: ChainSystem? = null
+    private lateinit var App: ChainSystem
 
     //var numbers = charArrayOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9')
     private var selectedPoint = PointF()
@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity() {
             when (event?.action) {
                 ACTION_DOWN -> with(myView) {
                     performClick()
-                    //TODO: kaatuu (NPA) kun App ei alustettu
+
                     if (App!!.isEmpty() || !(App!!.IsComplete() || App!!.CountAndMatchKnown() != "")&& selected != null) {
                         // pick item from toolbar
                         //if (event.y < 200f) {

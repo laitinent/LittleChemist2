@@ -101,5 +101,5 @@ class MyView(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
     }
 }
 
-//data class ToolBoxItem(val text:String, val color:Int)
-data class ToolBoxItem2(val text:String, val color:Int, val drawableResId: Int)
+//data class ToolBoxItem(val text:String, val color:Int) // draw
+data class ToolBoxItem2(val text:String, val color:Int, val drawableResId: Int) // use image

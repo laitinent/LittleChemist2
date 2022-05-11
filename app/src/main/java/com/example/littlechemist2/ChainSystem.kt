@@ -5,28 +5,41 @@ package com.example.littlechemist2
 /**
  * @param knownData - csv file contents of known molecule descriptions
  */
-class ChainSystem(knownData:String) {
+class ChainSystem(knownData: String) {
     private val Chain = mutableListOf<Node>()
-    private var Known : MutableMap<String,String>
+    private var Known: MutableMap<String, String>
 
     init {
         Known = parseKnown(knownData)
     }
 
+    /**
+     * Check if Chain data is empty
+     */
     fun isEmpty(): Boolean {
         return Chain.isEmpty()
     }
 
+    /**
+     * Create a map from string data
+     * @param knownData each line contains 2 fields
+     * @return map where key = 1st field, value = 2nd field
+     */
     private fun parseKnown(knownData: String): MutableMap<String, String> {
-        val retMap = mutableMapOf<String,String>()
-        val lines =knownData.split("\n")
+        val retMap = mutableMapOf<String, String>()
+        val lines = knownData.split("\n")
         lines.forEach {
             val fields = it.split(";")
-            if(fields.size>1) {  retMap[fields[0]] = fields[1]  }
+            if (fields.size > 1) {
+                retMap[fields[0]] = fields[1]
+            }
         }
         return retMap
     }
 
+    /**
+     * Clear Chain data
+     */
     fun Clear() {
         Chain.clear()
     }
@@ -43,8 +56,11 @@ class ChainSystem(knownData:String) {
         val n = Node(s)
         var free: Double = -1.0 // 0 means no mode left, -1 = first in chain
 
-        if (Chain.count() > 0) {  free = previous.AddLink(n)
-        } else { previous = n  }
+        if (Chain.count() > 0) {
+            free = previous.AddLink(n)
+        } else {
+            previous = n
+        }
 
         // TODO: find way to get this correct every time, maybe one with biggest maxnodes?
         if (n.MaxNodes > 1 && free == 0.0) {
@@ -97,7 +113,7 @@ class ChainSystem(knownData:String) {
     }
 
     /** toString
-     *
+     * @return formula as text as H2O
      **/
     override fun toString(): String {
         var s = ""
@@ -108,7 +124,9 @@ class ChainSystem(knownData:String) {
         {
             val n: Node = Chain[i]
             s += "$i. $n.Text ("
-            for (l in n.Nodes) { s += "$l.Text "  }
+            for (l in n.Nodes) {
+                s += "$l.Text "
+            }
             s += ") "
         }
         return s
@@ -161,6 +179,10 @@ class ChainSystem(knownData:String) {
         }
     }
 
+    /**
+     * Count multiple equal symbols and return converted formula text
+     * as HHH -> H3
+     */
     private fun countElements(): String {
         val counts = mutableMapOf<String, Int>()
         //numbersMap.put("three", 3)
@@ -171,17 +193,18 @@ class ChainSystem(knownData:String) {
         // count
         for (n in Chain) {
             counts[n.Text] =
-            if (!counts.containsKey(n.Text)) {  1 //counts[n.Text] = 1
-            } else {
-                //counts[n.Text] =
-                counts[n.Text]!!.plus(1)
-            }
+                if (!counts.containsKey(n.Text)) {
+                    1   //counts[n.Text] = 1
+                } else {
+                    //counts[n.Text] =
+                    counts[n.Text]!!.plus(1)
+                }
         }
 
         //TODO:
         val map = counts.toSortedMap()
 
-        var s=""
+        var s = ""
         for (item in counts) {
             s += if (item.value > 1) {
                 "${item.key}${item.value}"
@@ -193,15 +216,14 @@ class ChainSystem(knownData:String) {
     }
 
     /**
-    * Is every possible bond used
-    * @returns true / false
-    */
+     * Is every possible bond used
+     * @returns true / false
+     */
     fun IsComplete(): Boolean {
         var retval = true
         Chain.forEach { retval = (retval and it.IsFull()) }
         return retval
     }
-
 
     private val list = mutableListOf<FormulaItem>()
 
@@ -213,7 +235,7 @@ class ChainSystem(knownData:String) {
 
         val ss = ParseNodeText(s)
         /*TODO: C2H5OH vs C2H6O
-        //TODO: get from net https://laitinent.gitihub.io/moleculelist.csv
+        // Replaced by list from net https://laitinent.gitihub.io/moleculelist.csv
         val v: String = when (ss) {
             "H2O" -> " (Vesi)"
             "OH2" -> "H2O (Vesi)"
@@ -234,7 +256,7 @@ class ChainSystem(knownData:String) {
             else -> s
         };
         return v;*/
-        return if(Known.containsKey(ss)) {
+        return if (Known.containsKey(ss)) {
             Known[ss]!!
         } else ""
     }
@@ -243,15 +265,13 @@ class ChainSystem(knownData:String) {
      * Does molecule string have a descriptive name
      * @return name if found, empty string otherwise
      */
-    private fun MatchKnown(s: String):String
-    {
-        return if(Known.containsKey(s)) {
+    private fun MatchKnown(s: String): String {
+        return if (Known.containsKey(s)) {
             Known[s]!!
         } else ""
     }
 
-    fun CountAndMatchKnown():String
-    {
+    fun CountAndMatchKnown(): String {
         val s = countElements()
         return MatchKnown(s)
     }
@@ -260,9 +280,9 @@ class ChainSystem(knownData:String) {
         private lateinit var previous: Node // TODO: bad
 
         /**
-        * TODO: sort node text for simpler matching
-        * @param s
-        */
+         * TODO: sort node text for simpler matching
+         * @param s
+         */
         private fun ParseNodeText(s: String): String {
             //TODO: parsenodetext
             return s
