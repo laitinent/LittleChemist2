@@ -7,9 +7,10 @@
     tools:context=".MainActivity">
 <!-- TODO: recyclerview with toolbox items -->
     <TextView
+        android:id="@+id/helloTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:text="@string/helloWorld"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -20,9 +21,9 @@
         android:layout_width="389dp"
         android:layout_height="561dp"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/recyclerToolView" />
 
     <Button
         android:id="@+id/button"

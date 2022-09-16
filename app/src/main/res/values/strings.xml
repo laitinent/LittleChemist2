@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">LittleChemist2</string>
     <string name="txtClear">Clear</string>
+    <string name="helloWorld">Getting list of compound names...</string>
 </resources>

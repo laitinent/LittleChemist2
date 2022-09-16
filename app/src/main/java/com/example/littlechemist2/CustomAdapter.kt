@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class CustomAdapter(private val dataSet: Array<ToolBoxItem2>,val clickListener: (ToolBoxItem2) -> Unit) :   // was Int //was <String>
+class CustomAdapter(private val dataSet: Array<ToolBoxItem2>, val enable: Boolean,val clickListener: (ToolBoxItem2) -> Unit) :   // was Int //was <String>
     RecyclerView.Adapter<CustomAdapter.ViewHolder>() {
 
     /**
@@ -45,6 +45,7 @@ class CustomAdapter(private val dataSet: Array<ToolBoxItem2>,val clickListener: 
         //TODO: may be simplified
         viewHolder.textView.text = item.text//VisualNode.textFromColor(MyView.getColorFromDrawable(dataSet[position]))//dataSet[position]
         viewHolder.imageView.setImageResource(item.drawableResId)//dataSet[position])
+        viewHolder.imageView.isEnabled = enable
     }
 
     // Return the size of your dataset (invoked by the layout manager)
